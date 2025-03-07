@@ -2,18 +2,26 @@ import { NextResponse } from 'next/server';
 import { NewsAgent } from '../../lib/NewsAgent';
 
 // Verify the request is from a legitimate source
-const verifyRequest = (authHeader: string | null): boolean => {
+const verifyRequest = (request: Request): boolean => {
+  const authHeader = request.headers.get('authorization');
   const expectedToken = process.env.CRON_SECRET;
   
-  // If this is a Vercel cron job, the header might contain a template string like "Bearer ${CRON_SECRET}"
-  // In production, Vercel will replace this with the actual value before making the request
+  // Check for Vercel's internal cron job header
+  const vercelCronHeader = request.headers.get('x-vercel-cron');
   
+  // If this is coming from Vercel's internal cron job system
+  if (vercelCronHeader === '1') {
+    console.log('Request verified as coming from Vercel cron system');
+    return true;
+  }
+  
+  // For manual requests or testing, require authorization header
   if (!authHeader) {
     console.log('Authorization header is missing');
     return false;
   }
   
-  // For local development and testing
+  // For local development and testing with literal ${CRON_SECRET} in header
   if (process.env.NODE_ENV === 'development' && authHeader === 'Bearer ${CRON_SECRET}') {
     console.log('Development mode - accepting template string authorization');
     return true;
@@ -31,10 +39,7 @@ export async function POST(request: Request) {
     console.log('Cron job triggered');
     
     // Verify the request
-    const authHeader = request.headers.get('authorization');
-    console.log('Authorization header received:', authHeader ? 'Present' : 'Missing');
-    
-    if (!verifyRequest(authHeader)) {
+    if (!verifyRequest(request)) {
       console.log('Unauthorized cron request');
       return NextResponse.json(
         { error: 'Unauthorized' },

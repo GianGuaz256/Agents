@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "validate": "next build && echo 'Build successful - environment variables validated'"
+    "validate": "next build && echo 'Build successful - environment variables validated'",
+    "test:cron": "curl -X POST http://localhost:3001/api/cron -H 'x-vercel-cron: 1'"
   },
   "dependencies": {
     "next": "14.1.0",

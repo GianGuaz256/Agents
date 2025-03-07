@@ -7,7 +7,20 @@ export default function Home() {
       <div className="bg-gray-100 p-4 rounded-lg mb-6">
         <h2 className="text-xl font-semibold mb-2">Status</h2>
         <p>The system is configured to run daily at 9:00 AM CET via Vercel Cron Jobs.</p>
-        <p className="mt-2">To manually trigger the news collection process, use the API endpoint <code>/api/cron</code> with proper authorization.</p>
+        <p className="mt-2">To manually trigger the news collection process, use the API endpoint <code>/api/cron</code> with one of these methods:</p>
+        <ul className="list-disc ml-6 mt-2">
+          <li>Add header <code>x-vercel-cron: 1</code> to simulate a Vercel cron job</li>
+          <li>Add header <code>Authorization: Bearer [CRON_SECRET]</code> to authenticate manually</li>
+        </ul>
+      </div>
+      
+      <div className="bg-gray-100 p-4 rounded-lg mb-6">
+        <h2 className="text-xl font-semibold mb-2">Testing</h2>
+        <p>You can test the system configuration with these endpoints:</p>
+        <ul className="list-disc ml-6 mt-2">
+          <li><code>GET /api/test</code> - Verify environment variables</li>
+          <li><code>POST /api/test</code> - Test cron authorization setup</li>
+        </ul>
       </div>
       
       <div className="bg-gray-100 p-4 rounded-lg">
@@ -16,7 +29,7 @@ export default function Home() {
         <ul className="list-disc ml-6 mt-2">
           <li>Verify environment variables are set in Vercel</li>
           <li>Check Vercel logs for any errors</li>
-          <li>Test the API endpoint <code>/api/test</code> to validate environment variables</li>
+          <li>Ensure vercel.json has the correct cron configuration</li>
           <li>Ensure the Telegram bot is working and has access to the chat</li>
         </ul>
       </div>
